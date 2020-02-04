@@ -8,7 +8,6 @@ jwt:
   expiration: 604800      #7天 单位:秒
   auth-path: auth         #认证请求的路径
   md5-key: randomKey      #md5加密混淆key
-``
 server:
   port: 8082 #项目端口
 
@@ -45,4 +44,4 @@ logging:
   level.root: info
   level.com.stylefeng: debug
   path: logs/guns-film/
-  file: guns-film.log
+  file: /guns-film/guns-film.log

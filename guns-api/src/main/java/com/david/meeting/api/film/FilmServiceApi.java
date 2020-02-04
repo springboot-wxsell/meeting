@@ -73,8 +73,8 @@ public interface FilmServiceApi {
      */
     List<FilmInfo> getTop();
 
+    // ==== 获取影片条件接口
     /**
-     * ==== 获取影片条件接口
      * 分类条件
      * @return
      */
