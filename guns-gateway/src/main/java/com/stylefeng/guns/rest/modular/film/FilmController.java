@@ -3,11 +3,13 @@ package com.stylefeng.guns.rest.modular.film;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.david.meeting.api.film.FilmServiceApi;
 import com.david.meeting.api.film.vo.CatVO;
+import com.david.meeting.api.film.vo.FilmVO;
 import com.david.meeting.api.film.vo.SourceVO;
 import com.david.meeting.api.film.vo.YearVO;
 import com.stylefeng.guns.rest.common.vo.ResponseVO;
 import com.stylefeng.guns.rest.modular.film.vo.FilmConditionVO;
 import com.stylefeng.guns.rest.modular.film.vo.FilmIndexVO;
+import com.stylefeng.guns.rest.modular.film.vo.FilmRequestVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,10 +54,10 @@ public class FilmController {
         // 获取banner信息，
         filmIndexVO.setBanners(filmServiceApi.getBanners());
         //获取正在热映的电影
-        filmIndexVO.setHotFilms(filmServiceApi.getHotFilms(true, 8, 0, 0, 0, 0, 0));
+        filmIndexVO.setHotFilms(filmServiceApi.getHotFilms(true, 8, 1, 1, 99, 99, 99));
 
         // 获取即将上映的电影
-        filmIndexVO.setSoonFilms(filmServiceApi.getSoonFilms(true, 8, 0, 0, 0, 0, 0));
+        filmIndexVO.setSoonFilms(filmServiceApi.getSoonFilms(true, 8, 1, 1, 99, 99, 99));
 
         // 票房排行榜
         filmIndexVO.setBoxRanking(filmServiceApi.getBoxRanking());
@@ -173,6 +175,37 @@ public class FilmController {
         filmConditionVO.setYearInfo(yearResult);
 
         return ResponseVO.success(filmConditionVO);
+    }
 
+    // 获取首页信息
+    @GetMapping(value = "getFilms")
+    public ResponseVO getFilms(FilmRequestVO filmRequestVO) {
+        FilmVO filmVO = null;
+        // 根据showType 判断影片查询类型
+        switch (filmRequestVO.getShowType()) {
+            case 1 :
+                filmVO = filmServiceApi.getHotFilms(false, filmRequestVO.getPageSize(), filmRequestVO.getNowPage(),
+                        filmRequestVO.getSortId(), filmRequestVO.getSourceId(), filmRequestVO.getYearId(), filmRequestVO.getCatId());
+                break;
+            case 2 :
+                filmVO = filmServiceApi.getSoonFilms(false, filmRequestVO.getPageSize(), filmRequestVO.getNowPage(),
+                        filmRequestVO.getSortId(), filmRequestVO.getSourceId(), filmRequestVO.getYearId(), filmRequestVO.getCatId());
+                break;
+            case 3 :
+                filmVO = filmServiceApi.getClassicFilms(filmRequestVO.getPageSize(), filmRequestVO.getNowPage(),
+                        filmRequestVO.getSortId(), filmRequestVO.getSourceId(), filmRequestVO.getYearId(), filmRequestVO.getCatId());
+                break;
+            default:
+                filmVO = filmServiceApi.getHotFilms(false, filmRequestVO.getPageSize(), filmRequestVO.getNowPage(),
+                        filmRequestVO.getSortId(), filmRequestVO.getSourceId(), filmRequestVO.getYearId(), filmRequestVO.getCatId());
+                break;
+        }
+        // 根据 sortType 排序
+
+        // 添加各种查询类型
+
+        // 判断当前是第几页
+
+        return ResponseVO.success(filmVO.getNowPage(), filmVO.getTotalPage(), IMG_PRE, filmVO.getFilmInfo());
     }
 }

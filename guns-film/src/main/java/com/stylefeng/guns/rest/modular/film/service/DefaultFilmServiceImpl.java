@@ -73,6 +73,44 @@ public class DefaultFilmServiceImpl implements FilmServiceApi {
             filmVO.setFilmInfo(hotFilms);
         } else {
             // 如果不是，则是列表页，限制内容为热映影片
+            Page<MeetingTFilm> page = null;
+            // 根据 sortId 不同，来构造不同的对象
+            // 查询类型，1-正在热映，2-即将上映，3-经典影片
+            switch (sortId) {
+                case 1 :
+                    page = new Page<>(nowPage, nums, "film_box_office");
+                    break;
+                case 2 :
+                    page = new Page<>(nowPage, nums, "film_time");
+                    break;
+                case 3 :
+                    page = new Page<>(nowPage, nums, "film_score");
+                    break;
+                default:
+                    page = new Page<>(nowPage, nums, "film_box_office");
+                    break;
+            }
+            // 如果sourceId, yearId, catId 不为99，按照对应的编码进行查询
+            if (99 != sourceId) {
+                entityWrapper.eq("film_source", sourceId);
+            }
+            if (99 != yearId) {
+                entityWrapper.eq("film_status", yearId);
+            }
+            if (99 != catId) {
+                String catStr = "%#" + catId + "#%";
+                entityWrapper.like("film_cats", catStr);
+            }
+            List<MeetingTFilm> meetingTFilmList = meetingTFilmMapper.selectPage(page, entityWrapper);
+            hotFilms = getFilmInfos(meetingTFilmList);
+            filmVO.setFilmNum(meetingTFilmList.size());
+
+            // 计算分页
+            int totalCounts = meetingTFilmMapper.selectCount(entityWrapper);
+            int totalPages = (totalCounts/nums) + 1;
+            filmVO.setNowPage(nowPage);
+            filmVO.setTotalPage(totalPages);
+            filmVO.setFilmInfo(hotFilms);
         }
         return filmVO;
     }
@@ -105,21 +143,102 @@ public class DefaultFilmServiceImpl implements FilmServiceApi {
         entityWrapper.eq("film_status", "2");
         // 判断是否是首页所需内容
         if (isLimit) {
-            // 如果是，则限制条数，限制为热映影片
-            Page<MeetingTFilm> page = new Page<>(1, nums);
+            // 如果是，则限制条数，限制为即将上映影片
+            Page<MeetingTFilm> page = null;
+            // 根据 sortId 不同，来构造不同的对象
+            // 查询类型，1-正在热映，2-即将上映，3-经典影片
+            switch (sortId) {
+                case 1 :
+                    page = new Page<>(nowPage, nums, "film_preSaleNum");
+                    break;
+                case 2 :
+                    page = new Page<>(nowPage, nums, "film_time");
+                    break;
+                case 3 :
+                    page = new Page<>(nowPage, nums, "film_preSaleNum");
+                    break;
+                default:
+                    page = new Page<>(nowPage, nums, "film_preSaleNum");
+                    break;
+            }
             List<MeetingTFilm> meetingTFilmList = meetingTFilmMapper.selectPage(page, entityWrapper);
             soonFilms = getFilmInfos(meetingTFilmList);
             filmVO.setFilmNum(meetingTFilmList.size());
             filmVO.setFilmInfo(soonFilms);
         } else {
-            // 如果不是，则是列表页，限制内容为热映影片
+            // 如果不是，则是列表页，限制内容为即将上映影片
+            Page<MeetingTFilm> page = new Page<>(nowPage, nums);
+            // 如果sourceId, yearId, catId 不为99，按照对应的编码进行查询
+            if (99 != sourceId) {
+                entityWrapper.eq("film_source", sourceId);
+            }
+            if (99 != yearId) {
+                entityWrapper.eq("film_status", yearId);
+            }
+            if (99 != catId) {
+                String catStr = "%#" + catId + "#%";
+                entityWrapper.like("film_cats", catStr);
+            }
+            List<MeetingTFilm> meetingTFilmList = meetingTFilmMapper.selectPage(page, entityWrapper);
+            soonFilms = getFilmInfos(meetingTFilmList);
+            filmVO.setFilmNum(meetingTFilmList.size());
+
+            // 计算分页
+            int totalCounts = meetingTFilmMapper.selectCount(entityWrapper);
+            int totalPages = (totalCounts/nums) + 1;
+            filmVO.setNowPage(nowPage);
+            filmVO.setTotalPage(totalPages);
+            filmVO.setFilmInfo(soonFilms);
         }
         return filmVO;
     }
 
     @Override
     public FilmVO getClassicFilms(int nums, int nowPage, int sortId, int sourceId, int yearId, int catId) {
-        return null;
+        FilmVO filmVO = new FilmVO();
+        List<FilmInfo> classicFilms = null;
+        // 经典影片的限制条件
+        EntityWrapper<MeetingTFilm> entityWrapper = new EntityWrapper<>();
+        entityWrapper.eq("film_status", "3");
+        Page<MeetingTFilm> page = null;
+        // 根据 sortId 不同，来构造不同的对象
+        // 查询类型，1-正在热映，2-即将上映，3-经典影片
+        switch (sortId) {
+            case 1 :
+                page = new Page<>(nowPage, nums, "film_box_office");
+                break;
+            case 2 :
+                page = new Page<>(nowPage, nums, "film_time");
+                break;
+            case 3 :
+                page = new Page<>(nowPage, nums, "film_score");
+                break;
+            default:
+                page = new Page<>(nowPage, nums, "film_box_office");
+                break;
+        }
+        // 如果sourceId, yearId, catId 不为99，按照对应的编码进行查询
+        if (99 != sourceId) {
+            entityWrapper.eq("film_source", sourceId);
+        }
+        if (99 != yearId) {
+            entityWrapper.eq("film_status", yearId);
+        }
+        if (99 != catId) {
+            String catStr = "%#" + catId + "#%";
+            entityWrapper.like("film_cats", catStr);
+        }
+        List<MeetingTFilm> meetingTFilmList = meetingTFilmMapper.selectPage(page, entityWrapper);
+        classicFilms = getFilmInfos(meetingTFilmList);
+        filmVO.setFilmNum(meetingTFilmList.size());
+
+        // 计算分页
+        int totalCounts = meetingTFilmMapper.selectCount(entityWrapper);
+        int totalPages = (totalCounts/nums) + 1;
+        filmVO.setNowPage(nowPage);
+        filmVO.setTotalPage(totalPages);
+        filmVO.setFilmInfo(classicFilms);
+        return filmVO;
     }
 
     @Override

@@ -29,6 +29,11 @@ public class ResponseVO<T> implements Serializable {
     // 图片前缀
     private String imgPre;
 
+    // 当前页
+    private int nowPage;
+
+    private int totalPage;
+
     private ResponseVO() {
     }
 
@@ -43,6 +48,17 @@ public class ResponseVO<T> implements Serializable {
     public static <T> ResponseVO success(String imgPre, T data) {
         ResponseVO responseVO = new ResponseVO();
         responseVO.setStatus(BizResponseEnum.SUCCESS.getStatus());
+        responseVO.setImgPre(imgPre);
+        responseVO.setData(data);
+
+        return responseVO;
+    }
+
+    public static <T> ResponseVO success(int nowPage, int totalPage, String imgPre, T data) {
+        ResponseVO responseVO = new ResponseVO();
+        responseVO.setStatus(BizResponseEnum.SUCCESS.getStatus());
+        responseVO.setNowPage(nowPage);
+        responseVO.setTotalPage(totalPage);
         responseVO.setImgPre(imgPre);
         responseVO.setData(data);
 
