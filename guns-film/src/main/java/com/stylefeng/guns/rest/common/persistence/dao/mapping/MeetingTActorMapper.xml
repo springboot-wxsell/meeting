@@ -9,4 +9,17 @@
         <result column="actor_img" property="actorImg" />
     </resultMap>
 
+    <select id="getActors" parameterType="java.lang.String" resultType="com.david.meeting.api.film.vo.ActorVO">
+        SELECT
+            actor.actor_name AS directorName,
+            actor.actor_img AS imgAddress,
+            rela.role_name AS roleName
+        FROM
+            meeting_t_actor actor,
+            meeting_t_film_actor rela
+        WHERE
+            actor.UUID = rela.actor_id
+            AND rela.film_id = #{filmId};
+    </select>
+
 </mapper>

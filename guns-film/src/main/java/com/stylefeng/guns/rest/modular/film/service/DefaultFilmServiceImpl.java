@@ -42,6 +42,12 @@ public class DefaultFilmServiceImpl implements FilmServiceApi {
     @Autowired
     private MeetingTYearDictMapper meetingTYearDictMapper;
 
+    @Autowired
+    private MeetingTFilmInfoMapper meetingTFilmInfoMapper;
+
+    @Autowired
+    private MeetingTActorMapper meetingTActorMapper;
+
     @Override
     public List<BannerVO> getBanners() {
         List<BannerVO> bannerVOList = new ArrayList<>();
@@ -328,26 +334,62 @@ public class DefaultFilmServiceImpl implements FilmServiceApi {
 
     @Override
     public FilmDetailVO getFilmDetail(int searchType, String searchParam) {
-        return null;
+        FilmDetailVO filmDetailVO = null;
+        if (searchType == 1) {
+            filmDetailVO = meetingTFilmMapper.getFilmDetailByName(searchParam);
+        } else {
+            filmDetailVO = meetingTFilmMapper.getFilmDetailById(searchParam);
+        }
+        return filmDetailVO;
     }
 
     @Override
     public FilmDescVO getFilmDesc(String filmId) {
-        return null;
+        MeetingTFilmInfo meetingTFilmInfo = getFilmInfo(filmId);
+        FilmDescVO filmDescVO = new FilmDescVO();
+        filmDescVO.setBiography(meetingTFilmInfo.getBiography());
+        filmDescVO.setFilmId(filmId);
+        return filmDescVO;
+    }
+
+    private MeetingTFilmInfo getFilmInfo(String filmId) {
+        MeetingTFilmInfo meetingTFilmInfo = new MeetingTFilmInfo();
+        meetingTFilmInfo.setFilmId(filmId);
+        meetingTFilmInfo = meetingTFilmInfoMapper.selectOne(meetingTFilmInfo);
+        return meetingTFilmInfo;
     }
 
     @Override
     public ImgVO getImgs(String filmId) {
-        return null;
+        MeetingTFilmInfo meetingTFilmInfo = getFilmInfo(filmId);
+        // 图片呢地址是5个以逗号分隔的url
+        String filmImgStr = meetingTFilmInfo.getFilmImgs();
+        String[] filmImgs = filmImgStr.split(",");
+        ImgVO imgVO = new ImgVO();
+        imgVO.setMainImg(filmImgs[0]);
+        imgVO.setImg01(filmImgs[1]);
+        imgVO.setImg02(filmImgs[2]);
+        imgVO.setImg03(filmImgs[3]);
+        imgVO.setImg04(filmImgs[4]);
+        return imgVO;
     }
 
     @Override
     public ActorVO getDectInfo(String filmId) {
-        return null;
+        MeetingTFilmInfo meetingTFilmInfo = getFilmInfo(filmId);
+        // 获取导演编号
+        Integer directorId = meetingTFilmInfo.getDirectorId();
+        MeetingTActor meetingTActor = meetingTActorMapper.selectById(directorId);
+        ActorVO actorVO = new ActorVO();
+        actorVO.setImgAddress(meetingTActor.getActorImg());
+        actorVO.setDirectorName(meetingTActor.getActorName());
+
+        return actorVO;
     }
 
     @Override
     public List<ActorVO> getActors(String filmId) {
-        return null;
+        List<ActorVO> actorVOList = meetingTActorMapper.getActors(filmId);
+        return actorVOList;
     }
 }

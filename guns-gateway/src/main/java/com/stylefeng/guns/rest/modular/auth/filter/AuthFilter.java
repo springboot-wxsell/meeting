@@ -51,7 +51,7 @@ public class AuthFilter extends OncePerRequestFilter {
         // 匹配为 /user/register
         String[] ignoreUrls = ignoreUrl.split(",");
         for (int i = 0; i < ignoreUrls.length; i++) {
-            if (request.getServletPath().equals(ignoreUrls[i])) {
+            if (request.getServletPath().startsWith(ignoreUrls[i])) {
                 chain.doFilter(request, response);
                 return;
             } else {
