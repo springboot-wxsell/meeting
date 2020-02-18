@@ -29,7 +29,7 @@ public class EntityGenerator {
 
         // 全局配置
         GlobalConfig gc = new GlobalConfig();
-        gc.setOutputDir("D:\\code\\iworkspace\\imooc\\guns\\guns-film\\src\\main\\java");//这里写你自己的java目录
+        gc.setOutputDir("D:\\code\\iworkspace\\imooc\\guns\\guns-cinema\\src\\main\\java");//这里写你自己的java目录
         gc.setFileOverride(true);//是否覆盖
         gc.setActiveRecord(true);
         gc.setEnableCache(false);// XML 二级缓存
@@ -60,7 +60,8 @@ public class EntityGenerator {
         strategy.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
 //        strategy.setInclude(new String[]{"meeting_t_banner", "meeting_t_cat_dict", "meeting_t_source_dict",
 //                "meeting_t_year_dict", "meeting_t_film", "meeting_t_film_info", "meeting_t_actor"});
-        strategy.setInclude(new String[]{"meeting_t_film_actor"});
+        strategy.setInclude(new String[]{"meeting_brand_dict_t", "meeting_area_dict_t", "meeting_hall_dict_t",
+                "meeting_cinema_t", "meeting_field_t", "meeting_hall_film_info_t"});
         mpg.setStrategy(strategy);
 
         // 包配置

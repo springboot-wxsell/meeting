@@ -9,14 +9,14 @@ import java.io.Serializable;
 
 /**
  * <p>
- * 类型信息表
+ * 地域信息表
  * </p>
  *
  * @author david
- * @since 2020-02-02
+ * @since 2020-02-16
  */
-@TableName("meeting_t_cat_dict")
-public class MeetingTCatDict extends Model<MeetingTCatDict> {
+@TableName("meeting_area_dict_t")
+public class MeetingAreaDictT extends Model<MeetingAreaDictT> {
 
     private static final long serialVersionUID = 1L;
 
@@ -55,7 +55,7 @@ public class MeetingTCatDict extends Model<MeetingTCatDict> {
 
     @Override
     public String toString() {
-        return "MeetingTCatDict{" +
+        return "MeetingAreaDictT{" +
         "uuid=" + uuid +
         ", showName=" + showName +
         "}";

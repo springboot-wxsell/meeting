@@ -9,14 +9,14 @@ import java.io.Serializable;
 
 /**
  * <p>
- * 演员表
+ * 品牌信息表
  * </p>
  *
  * @author david
- * @since 2020-02-02
+ * @since 2020-02-16
  */
-@TableName("meeting_t_actor")
-public class MeetingTActor extends Model<MeetingTActor> {
+@TableName("meeting_brand_dict_t")
+public class MeetingBrandDictT extends Model<MeetingBrandDictT> {
 
     private static final long serialVersionUID = 1L;
 
@@ -26,15 +26,10 @@ public class MeetingTActor extends Model<MeetingTActor> {
     @TableId(value = "UUID", type = IdType.AUTO)
     private Integer uuid;
     /**
-     * 演员名称
+     * 显示名称
      */
-    @TableField("actor_name")
-    private String actorName;
-    /**
-     * 演员图片位置
-     */
-    @TableField("actor_img")
-    private String actorImg;
+    @TableField("show_name")
+    private String showName;
 
 
     public Integer getUuid() {
@@ -45,20 +40,12 @@ public class MeetingTActor extends Model<MeetingTActor> {
         this.uuid = uuid;
     }
 
-    public String getActorName() {
-        return actorName;
+    public String getShowName() {
+        return showName;
     }
 
-    public void setActorName(String actorName) {
-        this.actorName = actorName;
-    }
-
-    public String getActorImg() {
-        return actorImg;
-    }
-
-    public void setActorImg(String actorImg) {
-        this.actorImg = actorImg;
+    public void setShowName(String showName) {
+        this.showName = showName;
     }
 
     @Override
@@ -68,10 +55,9 @@ public class MeetingTActor extends Model<MeetingTActor> {
 
     @Override
     public String toString() {
-        return "MeetingTActor{" +
+        return "MeetingBrandDictT{" +
         "uuid=" + uuid +
-        ", actorName=" + actorName +
-        ", actorImg=" + actorImg +
+        ", showName=" + showName +
         "}";
     }
 }
