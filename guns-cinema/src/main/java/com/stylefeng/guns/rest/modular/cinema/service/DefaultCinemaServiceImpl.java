@@ -5,10 +5,11 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.david.meeting.api.cinema.CinemaServiceApi;
 import com.david.meeting.api.cinema.vo.*;
-import com.david.meeting.api.film.FilmServiceApi;
-import com.david.meeting.api.film.vo.BannerVO;
 import com.stylefeng.guns.rest.common.persistence.dao.*;
-import com.stylefeng.guns.rest.common.persistence.model.*;
+import com.stylefeng.guns.rest.common.persistence.model.MeetingAreaDictT;
+import com.stylefeng.guns.rest.common.persistence.model.MeetingBrandDictT;
+import com.stylefeng.guns.rest.common.persistence.model.MeetingCinemaT;
+import com.stylefeng.guns.rest.common.persistence.model.MeetingHallDictT;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,7 +26,7 @@ import java.util.List;
  */
 @Slf4j
 @Component
-@Service(interfaceClass = FilmServiceApi.class)
+@Service(interfaceClass = CinemaServiceApi.class)
 public class DefaultCinemaServiceImpl implements CinemaServiceApi {
 
     @Autowired
@@ -100,7 +101,7 @@ public class DefaultCinemaServiceImpl implements CinemaServiceApi {
             // 判断 flag 如果为 true, 则需要将99 置为true, 否则，将内容置为isActive
             if (flag) {
                 if (brandDictT.getUuid() == 99) {
-                    bannerVO.setActive(false);
+                    bannerVO.setActive(true);
                 }
             } else {
                 if (brandDictT.getUuid() == brandId) {
@@ -132,7 +133,7 @@ public class DefaultCinemaServiceImpl implements CinemaServiceApi {
             areaVO.setAreaName(areaDictT.getShowName());
             if (flag) {
                 if (areaDictT.getUuid() == 99) {
-                    areaVO.setActive(false);
+                    areaVO.setActive(true);
                 }
             } else {
                 if (areaDictT.getUuid() == areaId) {
@@ -164,7 +165,7 @@ public class DefaultCinemaServiceImpl implements CinemaServiceApi {
             hallTypeVO.setHalltypeName(hallDictT.getShowName());
             if (flag) {
                 if (hallDictT.getUuid() == 99) {
-                    hallTypeVO.setActive(false);
+                    hallTypeVO.setActive(true);
                 }
             } else {
                 if (hallDictT.getUuid() == hallType) {
@@ -176,6 +177,7 @@ public class DefaultCinemaServiceImpl implements CinemaServiceApi {
         return hallTypeVOList;
     }
 
+    //5、根据影院编号，获取影院信息
     @Override
     public CinemaInfoVO getCinemaInfoById(int cinemaId) {
         MeetingCinemaT meetingCinemaT = meetingCinemaTMapper.selectById(cinemaId);
@@ -190,19 +192,22 @@ public class DefaultCinemaServiceImpl implements CinemaServiceApi {
         return cinemaInfoVO;
     }
 
+    //6、获取所有电影的信息和对应的放映场次信息，根据影院编号
     @Override
     public List<FilmInfoVO> getFilmInfoByCinemaId(int cinemaId) {
-        return null;
+        return meetingFieldTMapper.getFilmInfos(cinemaId);
     }
 
+    //7、根据放映场次ID获取放映信息
     @Override
     public HallInfoVO getFilmFieldInfo(int fieldId) {
-        return null;
+        return meetingFieldTMapper.getHallInfo(fieldId);
     }
 
+    //8、根据放映场次查询播放的电影编号，然后根据电影编号获取对应的电影信息
     @Override
     public FilmInfoVO getFilmInfoByFieldId(int fieldId) {
-        return null;
+        return meetingFieldTMapper.getFilmInfoById(fieldId);
     }
 }
 
