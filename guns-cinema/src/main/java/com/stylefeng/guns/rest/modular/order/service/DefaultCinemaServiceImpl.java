@@ -6,10 +6,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.david.meeting.api.cinema.CinemaServiceApi;
 import com.david.meeting.api.cinema.vo.*;
 import com.stylefeng.guns.rest.common.persistence.dao.*;
-import com.stylefeng.guns.rest.common.persistence.model.MeetingAreaDictT;
-import com.stylefeng.guns.rest.common.persistence.model.MeetingBrandDictT;
-import com.stylefeng.guns.rest.common.persistence.model.MeetingCinemaT;
-import com.stylefeng.guns.rest.common.persistence.model.MeetingHallDictT;
+import com.stylefeng.guns.rest.common.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -208,6 +205,15 @@ public class DefaultCinemaServiceImpl implements CinemaServiceApi {
     @Override
     public FilmInfoVO getFilmInfoByFieldId(int fieldId) {
         return meetingFieldTMapper.getFilmInfoById(fieldId);
+    }
+
+    @Override
+    public OrderQueryVO getOrderNeeds(int fieldId) {
+        OrderQueryVO orderQueryVO = new OrderQueryVO();
+        MeetingFieldT meetingFieldT = meetingFieldTMapper.selectById(fieldId);
+        orderQueryVO.setCinemaId(meetingFieldT.getCinemaId() + "");
+        orderQueryVO.setFilmPrice(meetingFieldT.getPrice()+"");
+        return null;
     }
 }
 
