@@ -29,6 +29,8 @@ public class DefaultOrderServiceImpl implements OrderServiceApi {
     public boolean isTrueSeats(Integer fieldId, String seats) {
 
         // 根据 fieldId 找到对应的座位位置图
+        String seatAddress = meetingOrderTMapper.getSeatsByFieldId(fieldId);
+        
 
         // 读取位置图
 
