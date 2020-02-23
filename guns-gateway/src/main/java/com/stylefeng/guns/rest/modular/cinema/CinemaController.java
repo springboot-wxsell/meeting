@@ -30,7 +30,7 @@ public class CinemaController {
 
     private static final String IMG_PRE = "http://img.meetingshop.cn/";
 
-    @Reference(interfaceClass = CinemaServiceApi.class, cache = "lru", check = false)
+    @Reference(interfaceClass = CinemaServiceApi.class, connections = 10, cache = "lru", check = false)
     private CinemaServiceApi cinemaServiceApi;
 
     //查询影院列表

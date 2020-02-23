@@ -26,7 +26,7 @@ import java.util.List;
  */
 @Slf4j
 @Component
-@Service(interfaceClass = CinemaServiceApi.class)
+@Service(interfaceClass = CinemaServiceApi.class, executes = 10)
 public class DefaultCinemaServiceImpl implements CinemaServiceApi {
 
     @Autowired
