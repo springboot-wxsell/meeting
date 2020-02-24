@@ -1,4 +1,4 @@
-package com.stylefeng.guns.rest.modular.order.service;
+package com.stylefeng.guns.rest.modular.cinema.service;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -212,7 +212,7 @@ public class DefaultCinemaServiceImpl implements CinemaServiceApi {
         OrderQueryVO orderQueryVO = new OrderQueryVO();
         MeetingFieldT meetingFieldT = meetingFieldTMapper.selectById(fieldId);
         orderQueryVO.setCinemaId(meetingFieldT.getCinemaId() + "");
-        orderQueryVO.setFilmPrice(meetingFieldT.getPrice()+"");
+        orderQueryVO.setFilmPrice(meetingFieldT.getPrice() + "");
         return null;
     }
 }

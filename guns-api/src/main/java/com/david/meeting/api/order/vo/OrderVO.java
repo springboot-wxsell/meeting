@@ -2,6 +2,8 @@ package com.david.meeting.api.order.vo;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * @author : wangwei
  * @date : Created in 2020/2/23 14:29
@@ -10,7 +12,7 @@ import lombok.Data;
  * @version: ${version}
  */
 @Data
-public class OrderVO {
+public class OrderVO implements Serializable {
 
     private String orderId;
 
@@ -20,7 +22,7 @@ public class OrderVO {
 
     private String cinemaName;
 
-    private String seatName;
+    private String seatsName;
 
     private String orderPrice;
 

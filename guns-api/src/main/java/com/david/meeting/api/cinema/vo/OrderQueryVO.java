@@ -2,6 +2,8 @@ package com.david.meeting.api.cinema.vo;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * @author : wangwei
  * @date : Created in 2020/2/23 20:46
@@ -10,7 +12,7 @@ import lombok.Data;
  * @version: ${version}
  */
 @Data
-public class OrderQueryVO {
+public class OrderQueryVO implements Serializable {
 
     private String cinemaId;
 

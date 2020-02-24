@@ -1,8 +1,10 @@
 package com.stylefeng.guns.rest.modular.order.service;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.david.meeting.api.cinema.CinemaServiceApi;
 import com.david.meeting.api.cinema.vo.FilmInfoVO;
 import com.david.meeting.api.cinema.vo.OrderQueryVO;
@@ -37,9 +39,9 @@ public class DefaultOrderServiceImpl implements OrderServiceApi {
     @Autowired
     private MeetingOrderTMapper meetingOrderTMapper;
 
-    @Autowired
+    @Reference(interfaceClass = CinemaServiceApi.class, check = false)
     private CinemaServiceApi cinemaServiceApi;
-    
+
     @Autowired
     private FTPUtils ftpUtils;
 
@@ -76,13 +78,14 @@ public class DefaultOrderServiceImpl implements OrderServiceApi {
     }
 
     /**
-     *  优化空间，sql 直接横转纵用，拼接后，通过二分法查询匹配
+     * 优化空间，sql 直接横转纵用，拼接后，通过二分法查询匹配
+     *
      * @param fieldId
      * @param seats
      * @return
      */
     @Override
-    public boolean isNotSoldSeats(String fieldId, String seats) {
+    public boolean isNotSoldSeats(Integer fieldId, String seats) {
         EntityWrapper entityWrapper = new EntityWrapper();
         entityWrapper.eq("fieldId", fieldId);
         List<MeetingOrderT> orderTList = meetingOrderTMapper.selectList(entityWrapper);
@@ -147,16 +150,24 @@ public class DefaultOrderServiceImpl implements OrderServiceApi {
     }
 
     @Override
-    public List<OrderVO> getOrderByUserId(Integer userId) {
+    public Page<OrderVO> getOrderByUserId(Integer userId, int nowPage, int pageSize) {
+        Page<OrderVO> page = new Page<>();
         if (userId == null) {
             log.error("订单查询业务失败, 用户编号未获取到");
             return null;
         } else {
             List<OrderVO> orderVOList = meetingOrderTMapper.getOrderInfosByUserId(userId);
             if (CollectionUtils.isEmpty(orderVOList)) {
-                return Collections.emptyList();
+                page.setTotal(0);
+                page.setRecords(Collections.emptyList());
+                return page;
             } else {
-                return orderVOList;
+                EntityWrapper<MeetingOrderT> entityWrapper = new EntityWrapper();
+                entityWrapper.eq("order_user", userId);
+                Integer count = meetingOrderTMapper.selectCount(entityWrapper);
+                page.setTotal(count);
+                page.setRecords(orderVOList);
+                return page;
             }
         }
     }
@@ -164,9 +175,10 @@ public class DefaultOrderServiceImpl implements OrderServiceApi {
     // 根据放映查询， 获取所有的已售座位
 
     /**
-     *  1、 1,2,3,4
-     *  2、 5,7,8
-     *              --> 1,2,3,4,5,7,8
+     * 1、 1,2,3,4
+     * 2、 5,7,8
+     * --> 1,2,3,4,5,7,8
+     *
      * @param fieldId
      * @return
      */
@@ -176,7 +188,7 @@ public class DefaultOrderServiceImpl implements OrderServiceApi {
             log.error("未传入任何场次编号");
             return null;
         } else {
-            String seatIds = meetingOrderTMapper.getSeatsByFieldId(fieldId);
+            String seatIds = meetingOrderTMapper.getSoldSeatsByFieldId(fieldId);
             return seatIds;
         }
     }
