@@ -4,6 +4,7 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.david.meeting.api.order.OrderServiceApi;
 import com.david.meeting.api.order.vo.OrderVO;
+import com.stylefeng.guns.core.util.TokenBucket;
 import com.stylefeng.guns.rest.common.CurrentUser;
 import com.stylefeng.guns.rest.common.vo.ResponseVO;
 import lombok.extern.slf4j.Slf4j;
@@ -21,38 +22,42 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class OrderController {
 
+    private static TokenBucket tokenBucket = new TokenBucket();
+
+
     @Reference(interfaceClass = OrderServiceApi.class, check = false)
     private OrderServiceApi orderServiceApi;
 
     // 购票
     @PostMapping("buyTickets")
-    public ResponseVO buyTickets(Integer fieldId, String soldSeats, String seatsName) {
+    public ResponseVO buyTickets(@RequestParam Integer fieldId, String soldSeats, String seatsName) {
         try {
-            // 验证售出的票是否为真
-            boolean isTrue = orderServiceApi.isTrueSeats(fieldId, soldSeats);
-            if (isTrue) {
-
-            }
-
-            // 已经销售的座位处理，有没有这些座位
-            boolean isNotSold = orderServiceApi.isNotSoldSeats(fieldId, soldSeats);
-
-            // 验证，上述两个内容有一个不为真，则不创建订单
-            // 创建订单信息(获取当前登录人)
-            if (isTrue && isNotSold) {
-                String userId = CurrentUser.getCurrentUser();
-                if (userId == null || userId.trim().length() == 0) {
-                    return ResponseVO.serviceFail("用户未登录");
-                }
-                OrderVO orderVO = orderServiceApi.createOrder(fieldId, soldSeats, seatsName, Integer.parseInt(userId));
-                if (orderVO == null) {
-                    log.error("购票失败");
-                    return ResponseVO.serviceFail("购票业务失败");
-                } else {
-                    return ResponseVO.success(orderVO);
-                }
+            if (!tokenBucket.getToken()) {
+                return ResponseVO.serviceFail("购票人数过多，请稍后重试");
             } else {
-                return ResponseVO.serviceFail("订单中的座位编号错误");
+                // 验证售出的票是否为真
+                boolean isTrue = orderServiceApi.isTrueSeats(fieldId, soldSeats);
+
+                // 已经销售的座位处理，有没有这些座位
+                boolean isNotSold = orderServiceApi.isNotSoldSeats(fieldId, soldSeats);
+
+                // 验证，上述两个内容有一个不为真，则不创建订单
+                // 创建订单信息(获取当前登录人)
+                if (isTrue && isNotSold) {
+                    String userId = CurrentUser.getCurrentUser();
+                    if (userId == null || userId.trim().length() == 0) {
+                        return ResponseVO.serviceFail("用户未登录");
+                    }
+                    OrderVO orderVO = orderServiceApi.createOrder(fieldId, soldSeats, seatsName, Integer.parseInt(userId));
+                    if (orderVO == null) {
+                        log.error("购票失败");
+                        return ResponseVO.serviceFail("购票业务失败");
+                    } else {
+                        return ResponseVO.success(orderVO);
+                    }
+                } else {
+                    return ResponseVO.serviceFail("订单中的座位编号错误");
+                }
             }
         } catch (Exception e) {
             log.error("购票业务异常");
