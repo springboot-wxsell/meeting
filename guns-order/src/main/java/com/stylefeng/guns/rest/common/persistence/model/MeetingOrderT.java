@@ -1,14 +1,14 @@
 package com.stylefeng.guns.rest.common.persistence.model;
 
-import com.baomidou.mybatisplus.activerecord.Model;
-import com.baomidou.mybatisplus.annotations.TableField;
+import java.math.BigDecimal;
+import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * <p>
@@ -26,7 +26,7 @@ public class MeetingOrderT extends Model<MeetingOrderT> {
     /**
      * 主键编号
      */
-    @TableId(value = "UUID")
+    @TableId(value = "UUID",type = IdType.INPUT)
     private String uuid;
     /**
      * 影院编号
