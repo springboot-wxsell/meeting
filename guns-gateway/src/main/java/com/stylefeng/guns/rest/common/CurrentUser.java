@@ -12,7 +12,7 @@ import com.david.meeting.api.user.vo.UserInfoModel;
  */
 public class CurrentUser {
 
-    private static final ThreadLocal<String> THREAD_LOCAL = new ThreadLocal<>();
+    private static final InheritableThreadLocal<String> THREAD_LOCAL = new InheritableThreadLocal<>();
 
     public static void saveUserId(String userId) {
         THREAD_LOCAL.set(userId);
