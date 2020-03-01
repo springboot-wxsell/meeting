@@ -17,6 +17,7 @@ import com.stylefeng.guns.rest.common.utils.UuidUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
@@ -57,6 +58,7 @@ public class DefaultOrderServiceImpl implements OrderServiceApi {
         //将 address 转化为 Json 对象
         JSONObject jsonObject = JSONObject.parseObject(addressStr);
         String ids = jsonObject.get("ids").toString();
+//        String ids = "11,12";
         String[] idArrs = ids.split(",");
         String[] seatArrs = seats.split(",");
 
@@ -86,8 +88,8 @@ public class DefaultOrderServiceImpl implements OrderServiceApi {
      */
     @Override
     public boolean isNotSoldSeats(Integer fieldId, String seats) {
-        EntityWrapper entityWrapper = new EntityWrapper();
-        entityWrapper.eq("fieldId", fieldId);
+        EntityWrapper<MeetingOrderT> entityWrapper = new EntityWrapper();
+        entityWrapper.eq("field_id", fieldId);
         List<MeetingOrderT> orderTList = meetingOrderTMapper.selectList(entityWrapper);
         String[] seatArrs = seats.split(",");
         // 有任何一个匹配上，则直接返回失败
@@ -106,6 +108,7 @@ public class DefaultOrderServiceImpl implements OrderServiceApi {
 
     // 创建新订单
     @Override
+    @Transactional
     public OrderVO createOrder(Integer fieldId, String soldSeats, String seatsName, Integer userId) {
 
         // 编号
@@ -118,7 +121,7 @@ public class DefaultOrderServiceImpl implements OrderServiceApi {
         // 获取影院信息
         OrderQueryVO orderQueryVO = cinemaServiceApi.getOrderNeeds(fieldId);
         Integer cinemaId = Integer.parseInt(orderQueryVO.getCinemaId());
-        BigDecimal filmPrice = new BigDecimal(orderQueryVO.getFilmPrice());
+        BigDecimal filmPrice = new BigDecimal(orderQueryVO.getFilmPrice()).setScale(2);
 
         // 计算订单总金额
         int solds = soldSeats.split(",").length;

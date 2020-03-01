@@ -213,7 +213,7 @@ public class DefaultCinemaServiceImpl implements CinemaServiceApi {
         MeetingFieldT meetingFieldT = meetingFieldTMapper.selectById(fieldId);
         orderQueryVO.setCinemaId(meetingFieldT.getCinemaId() + "");
         orderQueryVO.setFilmPrice(meetingFieldT.getPrice() + "");
-        return null;
+        return orderQueryVO;
     }
 }
 
