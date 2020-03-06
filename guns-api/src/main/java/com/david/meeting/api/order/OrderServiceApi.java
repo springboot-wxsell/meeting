@@ -26,4 +26,27 @@ public interface OrderServiceApi {
 
     // 根据 fieldId 获取所有已经销售的座位编号
     String getSoldSeatsByFieldId(Integer fieldId);
+
+    /**
+     * 根据 id 获取订单信息
+     */
+    OrderVO getOrderInfoById(String orderId);
+
+    /**
+     * 支付成功
+     *
+     * @param orderId
+     * @return
+     */
+    boolean paySuccess(String orderId);
+
+    /**
+     * 支付失败
+     *
+     * @param orderId
+     * @return
+     */
+    boolean payFail(String orderId);
+
+
 }
