@@ -43,7 +43,7 @@ import java.util.List;
  */
 @Slf4j
 @Component
-@Service(interfaceClass = AlipayServiceApi.class, executes = 10)
+@Service(interfaceClass = AlipayServiceApi.class, executes = 10, mock = "com.david.meeting.api.alipay.AliPayServiceMock")
 public class DefaultAlipayServiceImpl implements AlipayServiceApi {
 
     // 支付宝当面付2.0服务
