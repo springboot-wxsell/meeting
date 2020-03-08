@@ -24,10 +24,13 @@ import com.david.meeting.api.alipay.vo.AlipayInfoVO;
 import com.david.meeting.api.alipay.vo.AlipayRequestVO;
 import com.david.meeting.api.order.OrderServiceApi;
 import com.david.meeting.api.order.vo.OrderVO;
+import com.stylefeng.guns.rest.common.utils.FTPUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,6 +77,9 @@ public class DefaultAlipayServiceImpl implements AlipayServiceApi {
 
     @Reference(interfaceClass = OrderServiceApi.class, check = false)
     private OrderServiceApi orderServiceApi;
+
+    @Autowired
+    private FTPUtils ftpUtils;
 
     /**
      * 获取支付二维码
@@ -190,8 +196,15 @@ public class DefaultAlipayServiceImpl implements AlipayServiceApi {
                 // 需要修改为运行机器上的路径
                 filePath = String.format("D:/upload/qrcode/qr-%s.png",
                         response.getOutTradeNo());
+                String fileName = String.format("qr-%s.png", response.getOutTradeNo());
                 log.info("filePath:" + filePath);
-                ZxingUtils.getQRCodeImge(response.getQrCode(), 256, filePath);
+                File qrCodeImge = ZxingUtils.getQRCodeImge(response.getQrCode(), 256, filePath);
+                // 保存文件路径
+                boolean isSuccess = ftpUtils.uploadFile(fileName, qrCodeImge);
+                if (!isSuccess) {
+                    filePath = "";
+                    log.error("支付二维码上传失败");
+                }
                 break;
 
             case FAILED:
