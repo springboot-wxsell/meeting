@@ -2,6 +2,7 @@ package com.stylefeng.guns.rest.modular.alipay.service;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.annotation.Service;
+import com.alibaba.dubbo.rpc.RpcContext;
 import com.alipay.api.domain.TradeFundBill;
 import com.alipay.api.response.AlipayTradePrecreateResponse;
 import com.alipay.api.response.AlipayTradeQueryResponse;
@@ -109,6 +110,9 @@ public class DefaultAlipayServiceImpl implements AlipayServiceApi {
      */
     @Override
     public AlipayRequestVO getOrderStatus(String orderId) {
+        // 看看有是否当前登录人
+        String userId = RpcContext.getContext().getAttachment("userId");
+        log.info("getOrderStatus - userId: " + userId);
         // 获取订单状态
         if (tradeQuery(orderId)) {
             AlipayRequestVO alipayRequestVO = new AlipayRequestVO();

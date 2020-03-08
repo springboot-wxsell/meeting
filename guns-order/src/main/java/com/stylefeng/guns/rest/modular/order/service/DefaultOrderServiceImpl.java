@@ -2,6 +2,7 @@ package com.stylefeng.guns.rest.modular.order.service;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.annotation.Service;
+import com.alibaba.dubbo.rpc.RpcContext;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -203,6 +204,10 @@ public class DefaultOrderServiceImpl implements OrderServiceApi {
 
     @Override
     public boolean paySuccess(String orderId) {
+        // 获取当前登录人
+        String userId = RpcContext.getContext().getAttachment("userId");
+        log.info("paySuccess - userId: " + userId);
+
         MeetingOrderT meetingOrderT = new MeetingOrderT();
         meetingOrderT.setUuid(orderId);
         meetingOrderT.setOrderStatus(1);
@@ -216,6 +221,10 @@ public class DefaultOrderServiceImpl implements OrderServiceApi {
 
     @Override
     public boolean payFail(String orderId) {
+        // 获取当前登录人
+        String userId = RpcContext.getContext().getAttachment("userId");
+        log.info("payFail - userId: " + userId);
+
         MeetingOrderT meetingOrderT = new MeetingOrderT();
         meetingOrderT.setUuid(orderId);
         meetingOrderT.setOrderStatus(2);
