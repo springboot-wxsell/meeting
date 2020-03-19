@@ -32,9 +32,9 @@ spring:
     name: meeting-gateway
   dubbo:
     consumer:
-      filter: 'tracing'
+      filter: tracing
     provider:
-      filter: 'tracing'
+      filter: tracing
     server: true
     registry: zookeeper://localhost:2181
   datasource:

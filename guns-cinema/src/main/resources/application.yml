@@ -29,17 +29,30 @@ spring:
   application:
     name: meeting-cinema
   dubbo:
+    consumer:
+      filter: tracing
+    provider:
+      filter: tracing
     server: true
     registry: zookeeper://localhost:2181
     protocol:
       name: dubbo
       port: 20883
-      accepts: 10
+      #accepts: 10
   datasource:
     url: jdbc:mysql://192.168.185.129:3306/guns_rest?autoReconnect=true&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
     username: root
     password: 123456
     filters: log4j,wall,mergeStat
+  # 启用sleuth
+  sleuth:
+    enabled: true
+    sampler:
+      probability: 1
+  zipkin:
+    base-url: http://192.168.185.129:9411
+    sender:
+      type: web
 
 logging:
   level.root: info

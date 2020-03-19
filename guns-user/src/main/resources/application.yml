@@ -31,9 +31,9 @@ spring:
     name: meeting-user
   dubbo:
     consumer:
-      filter: 'tracing'
+      filter: tracing
     provider:
-      filter: 'tracing'
+      filter: tracing
     server: true
     registry: zookeeper://localhost:2181
     protocol:
