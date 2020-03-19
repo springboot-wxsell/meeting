@@ -31,6 +31,10 @@ spring:
   application:
     name: meeting-gateway
   dubbo:
+    consumer:
+      filter: 'tracing'
+    provider:
+      filter: 'tracing'
     server: true
     registry: zookeeper://localhost:2181
   datasource:
@@ -38,6 +42,15 @@ spring:
       username: root
       password: 123456
       filters: log4j,wall,mergeStat
+  # 启用sleuth
+  sleuth:
+    enabled: true
+    sampler:
+      probability: 1
+  zipkin:
+    base-url: http://192.168.185.129:9411
+    sender:
+      type: web
 
 logging:
   level.root: info
